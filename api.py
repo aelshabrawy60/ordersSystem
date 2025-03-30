@@ -155,8 +155,16 @@ def webhook():
         use_saved_cookies=False
     )
 
-    fekra.make_order(customer_details=customer_information, orders=order_items)
+    orders = fekra.make_order(customer_details=customer_information, orders=order_items)
 
+    isAllOrderSucces = True
+
+    for order in orders:
+        if order.get("Sucesss") == False:
+            isAllOrderSucces = False
+            break
+
+        
     # send whatsapp message
 
     
@@ -179,7 +187,7 @@ def webhook():
         "items": order_items,
         "whatsapp_message_success": True if status else False,
         "reason_for_whatsapp_Failure": error,
-        "Sucesss": True if status else False,
+        "Sucesss": isAllOrderSucces,
         "reasonForFailure": None,
     }
     order.save_order(order=order_details)
