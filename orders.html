@@ -226,6 +226,8 @@
                 const tableBody = document.getElementById('ordersTableBody');
                 tableBody.innerHTML = ''; // Clear table body
                 
+                orders.reverse();
+
                 orders.forEach(order => {
                     // Create table row
                     const row = document.createElement('tr');
@@ -311,23 +313,8 @@
                 });
                 
                 // Format status
-                let statusBadge = '';
-                switch (order.order_status) {
-                    case 'pending':
-                        statusBadge = '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">قيد الانتظار</span>';
-                        break;
-                    case 'processing':
-                        statusBadge = '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">قيد المعالجة</span>';
-                        break;
-                    case 'completed':
-                        statusBadge = '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">مكتمل</span>';
-                        break;
-                    case 'cancelled':
-                        statusBadge = '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">ملغي</span>';
-                        break;
-                    default:
-                        statusBadge = '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">غير معروف</span>';
-                }
+                let statusBadge = `<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">${order.order_status}</span>`;
+                
                 
                 // Order success status
                 const orderSuccessBadge = order.Sucesss 
