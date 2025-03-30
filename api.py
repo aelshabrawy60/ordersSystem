@@ -159,8 +159,8 @@ def webhook():
 
     isAllOrderSucces = True
 
-    for order in orders:
-        if order.get("Sucesss") == False:
+    for order_ in orders:
+        if order_.get("Sucesss") == False:
             isAllOrderSucces = False
             break
 
