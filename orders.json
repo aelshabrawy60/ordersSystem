@@ -1,0 +1,173 @@
+[
+    {
+        "easy_order_id": "ff8c5bdc-87a8-4fa9-87bd-9e14ebf6fbd4",
+        "whatsapp_message_success": false,
+        "reason_for_whatsapp_Failure": null,
+        "order_status": "معلقة",
+        "date": 1743293120.473275,
+        "customer_details": {
+            "name": "Mostafa",
+            "phone": "01147009632",
+            "address": "دمياط الجديدة",
+            "state_value": 3,
+            "city_value": null,
+            "note": false
+        },
+        "items": [
+            {
+                "Sucesss": true,
+                "reasonForFailure": null,
+                "id": "saaa-cartier-kod61-IjNsZE",
+                "color_id": "85-color-0",
+                "quantity": 1,
+                "price": 800,
+                "commission": 100
+            }
+        ],
+        "Sucesss": false,
+        "reasonForFailure": "لم يتم التعرف علي المدينة"
+    },
+    {
+        "easy_order_id": "b3429995-e453-45cb-9c3c-87f7304f3243",
+        "whatsapp_message_success": true,
+        "reason_for_whatsapp_Failure": null,
+        "order_status": "معلقة",
+        "date": 1743293289.612867,
+        "customer_details": {
+            "name": "Mostafa",
+            "phone": "01147009632",
+            "address": "دمياط الجديدة",
+            "state_value": 3,
+            "city_value": 155,
+            "note": false
+        },
+        "items": [
+            {
+                "Sucesss": true,
+                "reasonForFailure": null,
+                "id": "saaa-cartier-kod61-IjNsZE",
+                "color_id": "85-color-0",
+                "quantity": 1,
+                "price": 800,
+                "commission": 100
+            }
+        ],
+        "Sucesss": true,
+        "reasonForFailure": null
+    },
+    {
+        "easy_order_id": "dd15ba01-d5d2-4a35-a4d2-7eb6817b2cd1",
+        "whatsapp_message_success": true,
+        "reason_for_whatsapp_Failure": null,
+        "order_status": "معلقة",
+        "date": 1743294385.478328,
+        "customer_details": {
+            "name": "Mostafa",
+            "phone": "01147009632",
+            "address": "القيليوبية بنها قرية طحلة شارع ",
+            "state_value": 5,
+            "city_value": 214,
+            "note": false
+        },
+        "items": [
+            {
+                "Sucesss": true,
+                "reasonForFailure": null,
+                "id": "saaa-cartier-kod61-IjNsZE",
+                "color_id": "85-color-1",
+                "quantity": 1,
+                "price": 800,
+                "commission": 100
+            }
+        ],
+        "Sucesss": true,
+        "reasonForFailure": null
+    },
+    {
+        "easy_order_id": "39d42b80-ce62-4245-8160-37ec6c1a87f8",
+        "whatsapp_message_success": true,
+        "reason_for_whatsapp_Failure": "'total_price'",
+        "order_status": "معلقة",
+        "date": 1743342353.468373,
+        "customer_details": {
+            "name": "تيست",
+            "phone": "01019689098",
+            "address": "سموحة",
+            "state_value": 3,
+            "city_value": 149,
+            "note": false,
+            "total_cost": 849
+        },
+        "items": [
+            {
+                "Sucesss": true,
+                "reasonForFailure": null,
+                "id": "saaa-cartier-kod61-IjNsZE",
+                "color_id": "85-color-3",
+                "quantity": 1,
+                "price": 800,
+                "commission": 100
+            }
+        ],
+        "Sucesss": false,
+        "reasonForFailure": null
+    },
+    {
+        "easy_order_id": "39d42b80-ce62-4245-8160-37ec6c1a87f8",
+        "whatsapp_message_success": true,
+        "reason_for_whatsapp_Failure": null,
+        "order_status": "معلقة",
+        "date": 1743342618.980048,
+        "customer_details": {
+            "name": "تيست",
+            "phone": "01019689098",
+            "address": "سموحة",
+            "state_value": 3,
+            "city_value": 149,
+            "note": false,
+            "total_cost": 849
+        },
+        "items": [
+            {
+                "Sucesss": true,
+                "reasonForFailure": null,
+                "id": "saaa-cartier-kod61-IjNsZE",
+                "color_id": "85-color-3",
+                "quantity": 1,
+                "price": 800,
+                "commission": 100
+            }
+        ],
+        "Sucesss": true,
+        "reasonForFailure": null
+    },
+    {
+        "easy_order_id": "39d42b80-ce62-4245-8160-37ec6c1a87f8",
+        "whatsapp_message_success": true,
+        "reason_for_whatsapp_Failure": null,
+        "order_status": "معلقة",
+        "date": 1743349115.241573,
+        "customer_details": {
+            "name": "تيست",
+            "phone": "01019689098",
+            "address": "سموحة",
+            "state_value": 3,
+            "city_value": 149,
+            "note": false,
+            "total_cost": 849
+        },
+        "items": [
+            {
+                "Sucesss": true,
+                "reasonForFailure": null,
+                "id": "saaa-cartier-kod61-IjNsZE",
+                "color_id": "85-color-3",
+                "quantity": 1,
+                "price": 789.0,
+                "commission": 100
+            }
+        ],
+        "Sucesss": true,
+        "reasonForFailure": null
+    }
+]

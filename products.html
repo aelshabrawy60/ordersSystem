@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Noto+Sans+Arabic:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Cairo', 'Noto Sans Arabic', sans-serif;
+        }
+        /* Hide scrollbar but allow scrolling if needed */
+        .custom-scrolling {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+        .custom-scrolling::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#e6f1fe',
+                            100: '#cce3fd',
+                            200: '#99c7fb',
+                            300: '#66abf9',
+                            400: '#338ff7',
+                            500: '#0073f5',
+                            600: '#005cc4',
+                            700: '#004593',
+                            800: '#002e62',
+                            900: '#001731',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="hidden md:flex md:flex-shrink-0">
+            <div class="flex flex-col w-64 bg-gray-800 border-r border-gray-700">
+                <div class="flex items-center justify-center h-16 px-4 bg-gray-900">
+                    <h1 class="text-xl font-bold text-primary-400">
+                        <i class="fas fa-shopping-cart ml-2"></i> مدير الطلبات
+                    </h1>
+                </div>
+                <div class="flex flex-col flex-grow px-4 py-4">
+                    <nav class="flex-1 space-y-2">
+                        <a href="/orders" class="flex items-center px-4 py-3 text-sm rounded-lg text-gray-300 hover:bg-gray-700" >
+                            <i class="fas fa-shopping-bag ml-3"></i>
+                            الطلبات
+                        </a>
+                        <a href="/" class="flex items-center px-4 py-3 text-sm rounded-lg bg-primary-600 text-white">
+                            <i class="fas fa-boxes ml-3"></i>
+                            المنتجات
+                        </a>
+                        <a href="/settings" class="flex items-center px-4 py-3 text-sm rounded-lg text-gray-300 hover:bg-gray-700">
+                            <i class="fas fa-cog ml-3"></i>
+                            الإعدادات
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex flex-col flex-1 overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="flex items-center justify-between px-6 py-4 bg-gray-800 border-b border-gray-700">
+                <div class="flex items-center">
+                    <button class="text-gray-400 md:hidden focus:outline-none">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 class="ml-4 text-xl font-bold">المنتجات</h2>
+                </div>
+                <div class="flex items-center">
+                    <button id="addProductBtn" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-all">
+                        <i class="fas fa-plus mr-2"></i> اضافة منتج
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <main class="flex-1 overflow-y-auto p-6 bg-gray-900">
+                <!-- Notification Toast -->
+                <div id="toast" class="fixed top-5 right-5 px-4 py-3 rounded-lg shadow-lg hidden transition-opacity duration-300">
+                    <span id="toastMessage"></span>
+                    <button class="ml-2 text-sm" onclick="document.getElementById('toast').classList.add('hidden')">×</button>
+                </div>
+
+                
+                <!-- Products Table -->
+                <div class="bg-gray-800 rounded-lg shadow overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-700">
+                        <thead class="bg-gray-700">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">fekra id</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">easy order name</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">الالوان</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">السعر</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">العمولة</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">عرض</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody" class="bg-gray-800 divide-y divide-gray-700">
+                            <!-- Products will be loaded here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal for editing/adding product -->
+    <div id="productModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modalTitle" class="text-xl font-bold text-white">Edit Product</h3>
+                <button id="closeModal" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="productForm">
+                <input type="hidden" id="productId">
+                <div class="space-y-4">
+                    <div>
+                        <label for="fekraId" class="block text-sm font-medium text-gray-300">Fekra ID</label>
+                        <input type="text" id="fekraId" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                    </div>
+                    <div>
+                        <label for="orderId" class="block text-sm font-medium text-gray-300">Easy Order ID</label>
+                        <input type="text" id="orderId" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                    </div>
+                    <div>
+                        <label for="price" class="block text-sm font-medium text-gray-300">السعر</label>
+                        <input type="number" id="price" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                    </div>
+                    <div>
+                        <label for="commission" class="block text-sm font-medium text-gray-300">العمولة</label>
+                        <input type="number" id="commission" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300">الالوان</label>
+                        <div id="colorsContainer" class="space-y-2 mt-1">
+                            <!-- Color inputs will be added here -->
+                        </div>
+                        <button type="button" id="addColorBtn" class="mt-2 px-3 py-1 bg-gray-700 text-sm text-gray-300 rounded hover:bg-gray-600">
+                            <i class="fas fa-plus mr-1"></i> اضف لون
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-6 flex gap-3 space-x-3">
+                    <button type="submit" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
+                        حفظ
+                    </button>
+                    <button type="button" id="cancelBtn" class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600">
+                        الغاء
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Products data
+        let products = [];
+        const FILE_NAME = 'products.json';
+
+        // DOM Elements
+        const productsTableBody = document.getElementById('productsTableBody');
+        const productModal = document.getElementById('productModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const productForm = document.getElementById('productForm');
+        const productIdInput = document.getElementById('productId');
+        const fekraIdInput = document.getElementById('fekraId');
+        const orderIdInput = document.getElementById('orderId');
+        const priceInput = document.getElementById('price');
+        const commissionInput = document.getElementById('commission');
+        const colorsContainer = document.getElementById('colorsContainer');
+        const addColorBtn = document.getElementById('addColorBtn');
+        const addProductBtn = document.getElementById('addProductBtn');
+        const closeModal = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+
+        // Show notification toast
+        function showToast(message, type = 'success') {
+            toastMessage.textContent = message;
+            toast.className = `fixed top-5 right-5 px-4 py-3 rounded-lg shadow-lg flex items-center z-50 ${
+                type === 'success' ? 'bg-green-600' : 'bg-red-600'
+            } text-white`;
+            
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Fetch products data from API
+        async function fetchProducts() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/products');
+                if (!response.ok) {
+                    throw new Error(`Failed to load products: ${response.status} ${response.statusText}`);
+                }
+                products = await response.json();
+                renderProducts();
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                showToast(`Error loading products: ${error.message}`, 'error');
+            }
+        }
+
+        // Save products to JSON file via API
+        async function saveProductsToFile() {
+            try {
+                const response = await fetch('/api/save-products', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(products)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to save: ${response.status} ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+                return true;
+            } catch (error) {
+                console.error('Error saving products:', error);
+                showToast(`Error saving products: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        // Render products in the table
+        function renderProducts() {
+            productsTableBody.innerHTML = '';
+            
+            products.forEach((product, index) => {
+                const tr = document.createElement('tr');
+                tr.className = index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-750';
+                
+                const colorsList = product.colors.map(color => color.easy_order_id).join(', ');
+                
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${product.fekra_id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${product.easy_order_id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${colorsList}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${product.price}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${product.commission}</td>
+                    <td class="px-6 py-4 whitespace-nowrap flex gap-4 text-sm font-medium">
+                        <button class="text-primary-400 hover:text-primary-300 mr-3 edit-btn" data-index="${index}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="text-red-500 hover:text-red-400 delete-btn" data-index="${index}">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                `;
+                
+                productsTableBody.appendChild(tr);
+            });
+            
+            // Add event listeners to edit and delete buttons
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', () => openEditModal(parseInt(btn.dataset.index)));
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', () => deleteProduct(parseInt(btn.dataset.index)));
+            });
+        }
+
+        // Open modal for editing a product
+        function openEditModal(index) {
+            const product = products[index];
+            modalTitle.textContent = 'Edit Product';
+            productIdInput.value = index;
+            fekraIdInput.value = product.fekra_id;
+            orderIdInput.value = product.easy_order_id;
+            priceInput.value = product.price;
+            commissionInput.value = product.commission;
+            
+            // Clear and populate colors
+            colorsContainer.innerHTML = '';
+            product.colors.forEach((color, colorIndex) => {
+                addColorField(color, colorIndex);
+            });
+            
+            productModal.classList.remove('hidden');
+            productModal.classList.add('flex');
+        }
+
+        // Open modal for adding a new product
+        function openAddModal() {
+            modalTitle.textContent = 'Add New Product';
+            productForm.reset();
+            productIdInput.value = '';
+            
+            // Clear colors and add one empty color field
+            colorsContainer.innerHTML = '';
+            addColorField();
+            
+            productModal.classList.remove('hidden');
+            productModal.classList.add('flex');
+        }
+
+        // Close the modal
+        function closeModalHandler() {
+            productModal.classList.add('hidden');
+            productModal.classList.remove('flex');
+        }
+
+        // Add a color input field to the form
+        function addColorField(color = { fekra_id: '', easy_order_id: '' }, index = null) {
+            const colorDiv = document.createElement('div');
+            colorDiv.className = 'flex items-center gap-3 ';
+            
+            const id = index !== null ? index : Date.now();
+            
+            colorDiv.innerHTML = `
+                <input type="text" placeholder="Fekra ID" class="color-fekra-id flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500" value="${color.fekra_id}">
+                <input type="text" placeholder="Easy Order ID" class="color-easy-order-id flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500" value="${color.easy_order_id}">
+                <button type="button" class="remove-color-btn text-red-500 hover:text-red-400">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            colorsContainer.appendChild(colorDiv);
+            
+            // Add event listener to remove button
+            colorDiv.querySelector('.remove-color-btn').addEventListener('click', () => {
+                colorDiv.remove();
+            });
+        }
+
+        // Save product changes
+        async function saveProduct(e) {
+            e.preventDefault();
+            
+            // Collect color data
+            const colors = [];
+            const colorRows = colorsContainer.querySelectorAll('div');
+            
+            colorRows.forEach(row => {
+                const fekraId = row.querySelector('.color-fekra-id').value;
+                const easyOrderId = row.querySelector('.color-easy-order-id').value;
+                
+                if (fekraId && easyOrderId) {
+                    colors.push({
+                        fekra_id: fekraId,
+                        easy_order_id: easyOrderId
+                    });
+                }
+            });
+            
+            const productData = {
+                fekra_id: fekraIdInput.value,
+                easy_order_id: orderIdInput.value,
+                colors: colors,
+                price: Number(priceInput.value),
+                commission: Number(commissionInput.value)
+            };
+            
+            const index = productIdInput.value;
+            
+            if (index === '') {
+                // Add new product
+                products.push(productData);
+                showToast('Product added successfully');
+            } else {
+                // Update existing product
+                products[parseInt(index)] = productData;
+                showToast('Product updated successfully');
+            }
+            
+            // Save changes to JSON file
+            const saved = await saveProductsToFile();
+            if (saved) {
+                renderProducts();
+                closeModalHandler();
+            }
+        }
+
+        // Delete a product
+        async function deleteProduct(index) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                products.splice(index, 1);
+                
+                // Save changes to JSON file
+                const saved = await saveProductsToFile();
+                if (saved) {
+                    renderProducts();
+                    showToast('Product deleted successfully');
+                }
+            }
+        }
+
+        // Event Listeners
+        addProductBtn.addEventListener('click', openAddModal);
+        closeModal.addEventListener('click', closeModalHandler);
+        cancelBtn.addEventListener('click', closeModalHandler);
+        addColorBtn.addEventListener('click', () => addColorField());
+        productForm.addEventListener('submit', saveProduct);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', fetchProducts);
+    </script>
+</body>
+</html>

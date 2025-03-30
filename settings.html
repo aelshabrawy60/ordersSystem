@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Noto+Sans+Arabic:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Cairo', 'Noto Sans Arabic', sans-serif;
+        }
+        /* Hide scrollbar but allow scrolling if needed */
+        .custom-scrolling {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+        .custom-scrolling::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#e6f1fe',
+                            100: '#cce3fd',
+                            200: '#99c7fb',
+                            300: '#66abf9',
+                            400: '#338ff7',
+                            500: '#0073f5',
+                            600: '#005cc4',
+                            700: '#004593',
+                            800: '#002e62',
+                            900: '#001731',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="hidden md:flex md:flex-shrink-0">
+            <div class="flex flex-col w-64 bg-gray-800 border-r border-gray-700">
+                <div class="flex items-center justify-center h-16 px-4 bg-gray-900">
+                    <h1 class="text-xl font-bold text-primary-400">
+                        <i class="fas fa-shopping-cart ml-2"></i> مدير الطلبات
+                    </h1>
+                </div>
+                <div class="flex flex-col flex-grow px-4 py-4">
+                    <nav class="flex-1 space-y-2">
+                        <a href="/orders" class="flex items-center px-4 py-3 text-sm rounded-lg text-gray-300 hover:bg-gray-700" >
+                            <i class="fas fa-shopping-bag ml-3"></i>
+                            الطلبات
+                        </a>
+                        <a href="/"  class="flex items-center px-4 py-3 text-sm rounded-lg text-gray-300 hover:bg-gray-700">
+                            <i class="fas fa-boxes ml-3"></i>
+                            المنتجات
+                        </a>
+                        <a href="/settings" class="flex items-center px-4 py-3 text-sm rounded-lg bg-primary-600 text-white">
+                            <i class="fas fa-cog ml-3"></i>
+                            الإعدادات
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex flex-col flex-1 overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="flex items-center justify-between px-6 py-4 bg-gray-800 border-b border-gray-700">
+                <div class="flex items-center">
+                    <button class="text-gray-400 md:hidden focus:outline-none">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 class="ml-4 text-xl font-bold">الإعدادات</h2>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <main class="flex-1 overflow-y-auto p-6 bg-gray-900" style="scrollbar-width: none; -ms-overflow-style: none;">
+                <!-- Notification Toast -->
+                <div id="toast" class="fixed top-5 right-5 px-4 py-3 rounded-lg shadow-lg hidden transition-opacity duration-300">
+                    <span id="toastMessage"></span>
+                    <button class="ml-2 text-sm" onclick="document.getElementById('toast').classList.add('hidden')">×</button>
+                </div>
+
+                <!-- Settings Forms -->
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- WhatsApp Status -->
+                    <div class="bg-gray-800 rounded-lg shadow p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold">WhatsApp Status</h3>
+                            <button id="refreshWhatsappBtn" class="px-3 py-1 bg-gray-700 text-sm text-gray-300 rounded hover:bg-gray-600">
+                                <i class="fas fa-sync-alt mr-1"></i> Refresh
+                            </button>
+                        </div>
+                        <div id="whatsappStatusContainer" class="space-y-4">
+                            <div class="flex items-center">
+                                <div id="statusIndicator" class="w-3 h-3 rounded-full mr-2 bg-gray-500"></div>
+                                <span id="statusText">Checking status...</span>
+                            </div>
+                            <div id="qrCodeContainer" class="hidden">
+                                <p class="text-sm text-gray-400 mb-2">Scan this QR code with your WhatsApp to connect:</p>
+                                <div class="bg-white p-4 inline-block rounded">
+                                    <img id="qrCodeImage" class="max-w-xs" src="" alt="WhatsApp QR Code">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gemini API Key -->
+                    <div class="bg-gray-800 rounded-lg shadow p-6">
+                        <h3 class="text-xl font-bold mb-4">Gemini API Settings</h3>
+                        <form id="geminiForm" class="space-y-4">
+                            <div>
+                                <label for="geminiApiKey" class="block text-sm font-medium text-gray-300">API Key</label>
+                                <input type="text" id="geminiApiKey" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="submit" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
+                                    Save Gemini API Key
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Fekra Credentials -->
+                    <div class="bg-gray-800 rounded-lg shadow p-6">
+                        <h3 class="text-xl font-bold mb-4">Fekra Credentials</h3>
+                        <form id="fekraForm" class="space-y-4">
+                            <div>
+                                <label for="fekraEmail" class="block text-sm font-medium text-gray-300">Email</label>
+                                <input type="email" id="fekraEmail" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                            </div>
+                            <div>
+                                <label for="fekraPassword" class="block text-sm font-medium text-gray-300">Password</label>
+                                <input type="password" id="fekraPassword" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="submit" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
+                                    Save Fekra Credentials
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const geminiForm = document.getElementById('geminiForm');
+        const geminiApiKeyInput = document.getElementById('geminiApiKey');
+        const fekraForm = document.getElementById('fekraForm');
+        const fekraEmailInput = document.getElementById('fekraEmail');
+        const fekraPasswordInput = document.getElementById('fekraPassword');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        const refreshWhatsappBtn = document.getElementById('refreshWhatsappBtn');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const statusText = document.getElementById('statusText');
+        const qrCodeContainer = document.getElementById('qrCodeContainer');
+        const qrCodeImage = document.getElementById('qrCodeImage');
+
+        // Show notification toast
+        function showToast(message, type = 'success') {
+            toastMessage.textContent = message;
+            toast.className = `fixed top-5 right-5 px-4 py-3 rounded-lg shadow-lg flex items-center z-50 ${
+                type === 'success' ? 'bg-green-600' : 'bg-red-600'
+            } text-white`;
+            
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Fetch WhatsApp status
+        async function fetchWhatsAppStatus() {
+            try {
+                statusIndicator.className = 'w-3 h-3 rounded-full mr-2 bg-yellow-500';
+                statusText.textContent = 'Checking status...';
+                qrCodeContainer.classList.add('hidden');
+                
+                const response = await fetch('/api/whatsapp-status');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch WhatsApp status');
+                }
+                
+                const data = await response.json();
+                
+                if (data.status === 'ready') {
+                    statusIndicator.className = 'w-3 h-3 rounded-full mr-2 bg-green-500';
+                    statusText.textContent = 'Active';
+                    qrCodeContainer.classList.add('hidden');
+                } else if (data.status === 'need_auth') {
+                    statusIndicator.className = 'w-3 h-3 rounded-full mr-2 bg-red-500';
+                    statusText.textContent = 'Not Active - Authentication Required';
+                    qrCodeContainer.classList.remove('hidden');
+                    qrCodeImage.src = data.qrCode;
+                } else if (data.status === 'initializing') {
+                    statusIndicator.className = 'w-3 h-3 rounded-full mr-2 bg-yellow-500';
+                    statusText.textContent = 'Initializing...';
+                    qrCodeContainer.classList.add('hidden');
+                } else {
+                    statusIndicator.className = 'w-3 h-3 rounded-full mr-2 bg-red-500';
+                    statusText.textContent = 'Error: ' + (data.message || 'Unknown status');
+                    qrCodeContainer.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Error fetching WhatsApp status:', error);
+                statusIndicator.className = 'w-3 h-3 rounded-full mr-2 bg-red-500';
+                statusText.textContent = 'Error: Could not connect to server';
+                qrCodeContainer.classList.add('hidden');
+            }
+        }
+
+        // Fetch settings data from API
+        async function fetchSettings() {
+            try {
+                const response = await fetch('/api/settings');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch settings');
+                }
+                const settings = await response.json();
+                
+                // Populate form fields
+                geminiApiKeyInput.value = settings.gemini_api_key || '';
+                fekraEmailInput.value = settings.fekra.email || '';
+                fekraPasswordInput.value = settings.fekra.password || '';
+            } catch (error) {
+                console.error('Error fetching settings:', error);
+                showToast('Failed to load settings', 'error');
+            }
+        }
+
+        // Update Gemini API Key
+        async function updateGeminiApiKey(apiKey) {
+            try {
+                const response = await fetch('/api/settings/gemini', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ api_key: apiKey })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to update Gemini API key');
+                }
+                
+                showToast('Gemini API key updated successfully');
+                return true;
+            } catch (error) {
+                console.error('Error updating Gemini API key:', error);
+                showToast('Failed to update Gemini API key', 'error');
+                return false;
+            }
+        }
+
+        // Update Fekra Credentials
+        async function updateFekraCredentials(email, password) {
+            try {
+                const response = await fetch('/api/settings/fekra', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to update Fekra credentials');
+                }
+                
+                showToast('Fekra credentials updated successfully');
+                return true;
+            } catch (error) {
+                console.error('Error updating Fekra credentials:', error);
+                showToast('Failed to update Fekra credentials', 'error');
+                return false;
+            }
+        }
+
+        // Event Listeners
+        geminiForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const apiKey = geminiApiKeyInput.value.trim();
+            await updateGeminiApiKey(apiKey);
+        });
+
+        fekraForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = fekraEmailInput.value.trim();
+            const password = fekraPasswordInput.value.trim();
+            await updateFekraCredentials(email, password);
+        });
+
+        refreshWhatsappBtn.addEventListener('click', () => {
+            fetchWhatsAppStatus();
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchSettings();
+            fetchWhatsAppStatus();
+        });
+    </script>
+</body>
+</html>

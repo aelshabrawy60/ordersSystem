@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Noto+Sans+Arabic:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Cairo', 'Noto Sans Arabic', sans-serif;
+        }
+        /* Hide scrollbar but allow scrolling if needed */
+        .custom-scrolling {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+        .custom-scrolling::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#e6f1fe',
+                            100: '#cce3fd',
+                            200: '#99c7fb',
+                            300: '#66abf9',
+                            400: '#338ff7',
+                            500: '#0073f5',
+                            600: '#005cc4',
+                            700: '#004593',
+                            800: '#002e62',
+                            900: '#001731',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="hidden md:flex md:flex-shrink-0">
+            <div class="flex flex-col w-64 bg-gray-800 border-r border-gray-700">
+                <div class="flex items-center justify-center h-16 px-4 bg-gray-900">
+                    <h1 class="text-xl font-bold text-primary-400">
+                        <i class="fas fa-shopping-cart ml-2"></i> مدير الطلبات
+                    </h1>
+                </div>
+                <div class="flex flex-col flex-grow px-4 py-4">
+                    <nav class="flex-1 space-y-2">
+                        <a href="/orders" class="flex items-center px-4 py-3 text-sm rounded-lg bg-primary-600 text-white">
+                            <i class="fas fa-shopping-bag ml-3"></i>
+                            الطلبات
+                        </a>
+                        <a href="/" class="flex items-center px-4 py-3 text-sm rounded-lg text-gray-300 hover:bg-gray-700">
+                            <i class="fas fa-boxes ml-3"></i>
+                            المنتجات
+                        </a>
+                        <a href="/settings" class="flex items-center px-4 py-3 text-sm rounded-lg text-gray-300 hover:bg-gray-700">
+                            <i class="fas fa-cog ml-3"></i>
+                            الإعدادات
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex flex-col flex-1 overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="flex items-center px-6 py-4 bg-gray-800 border-b border-gray-700">
+                <div class="flex items-center">
+                    <button class="text-gray-400 md:hidden focus:outline-none">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 class="mr-4 text-xl font-bold">الطلبات</h2>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="relative mr-4">
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3">
+                            <i class="fas fa-search text-gray-500"></i>
+                        </span>
+                        <input type="text" id="searchInput" class="py-2 pr-10 pl-4 text-gray-300 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-primary-500" placeholder="بحث في الطلبات...">
+                    </div>
+                    <div class="flex space-x-2 space-x-reverse">
+                        <button id="filterAll" class="px-3 py-1 text-sm bg-gray-700 text-white rounded-lg hover:bg-gray-600 active">الكل</button>
+                        <button id="filterSuccess" class="px-3 py-1 text-sm bg-gray-700 text-white rounded-lg hover:bg-gray-600">ناجح</button>
+                        <button id="filterFailure" class="px-3 py-1 text-sm bg-gray-700 text-white rounded-lg hover:bg-gray-600">فاشل</button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <main class="flex-1 overflow-y-auto p-6 bg-gray-900 " style="scrollbar-width: none; -ms-overflow-style: none;">
+                <!-- Orders Table -->
+                <div class="bg-gray-800 rounded-lg shadow overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-700">
+                        <thead class="bg-gray-700">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">رقم الطلب</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">اسم العميل</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">رقم الهاتف</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">العنوان</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">المنتجات</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">حالة الواتساب</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">حالة الطلب</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody" class="bg-gray-800 divide-y divide-gray-700">
+                            <!-- Orders will be loaded here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div id="orderModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-gray-800 rounded-lg shadow-lg w-full max-w-4xl p-6 max-h-[90vh] overflow-y-auto custom-scrolling">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modalTitle" class="text-xl font-bold text-white">تفاصيل الطلب</h3>
+                <button id="closeModal" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="orderDetails" class="space-y-4">
+                <!-- Order details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('orderModal');
+            const closeModal = document.getElementById('closeModal');
+            const orderDetails = document.getElementById('orderDetails');
+            const filterAll = document.getElementById('filterAll');
+            const filterSuccess = document.getElementById('filterSuccess');
+            const filterFailure = document.getElementById('filterFailure');
+            let allOrders = [];
+            let currentFilter = 'all';
+            
+            // Set active filter button
+            function setActiveFilter(button) {
+                [filterAll, filterSuccess, filterFailure].forEach(btn => {
+                    btn.classList.remove('bg-primary-600');
+                    btn.classList.add('bg-gray-700');
+                });
+                button.classList.remove('bg-gray-700');
+                button.classList.add('bg-primary-600');
+            }
+            
+            // Filter click events
+            filterAll.addEventListener('click', function() {
+                currentFilter = 'all';
+                setActiveFilter(this);
+                renderOrders(allOrders);
+            });
+            
+            filterSuccess.addEventListener('click', function() {
+                currentFilter = 'success';
+                setActiveFilter(this);
+                renderOrders(allOrders.filter(order => order.Sucesss === true));
+            });
+            
+            filterFailure.addEventListener('click', function() {
+                currentFilter = 'failure';
+                setActiveFilter(this);
+                renderOrders(allOrders.filter(order => order.Sucesss === false));
+            });
+            
+            // Close modal when clicking the close button
+            closeModal.addEventListener('click', function() {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            });
+            
+            // Close modal when clicking outside the modal content
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }
+            });
+            
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                let filteredOrders = allOrders;
+                
+                // Apply current success/failure filter
+                if (currentFilter === 'success') {
+                    filteredOrders = filteredOrders.filter(order => order.Sucesss === true);
+                } else if (currentFilter === 'failure') {
+                    filteredOrders = filteredOrders.filter(order => order.Sucesss === false);
+                }
+                
+                // Apply search filter
+                if (searchTerm) {
+                    filteredOrders = filteredOrders.filter(order => 
+                        order.easy_order_id.toLowerCase().includes(searchTerm) ||
+                        order.customer_details.name.toLowerCase().includes(searchTerm) ||
+                        order.customer_details.phone.toLowerCase().includes(searchTerm) ||
+                        order.customer_details.address.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                renderOrders(filteredOrders);
+            });
+            
+            // Render orders to table
+            function renderOrders(orders) {
+                const tableBody = document.getElementById('ordersTableBody');
+                tableBody.innerHTML = ''; // Clear table body
+                
+                orders.forEach(order => {
+                    // Create table row
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-700';
+                    
+                    // Calculate total items
+                    const totalItems = order.items.length;
+                    
+                    // Format date
+                    const orderDate = new Date(order.date * 1000);
+                    const formattedDate = orderDate.toLocaleDateString('ar-EG', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                    
+                    // Prepare status content including reason for failure
+                    let statusContent = order.Sucesss 
+                        ? '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">ناجح</span>' 
+                        : '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">فاشل</span>';
+                        
+                    // Add reason for failure if exists
+                    if (order.reasonForFailure) {
+                        statusContent += `<div class="text-xs text-red-400 mt-1">${order.reasonForFailure}</div>`;
+                    }
+                    
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${order.easy_order_id.substring(0, 8)}...</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${order.customer_details.name}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${order.customer_details.phone}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${order.customer_details.address}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${totalItems}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            ${order.whatsapp_message_success 
+                                ? '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">تم الإرسال</span>' 
+                                : '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">فشل</span>'}
+                            ${order.reason_for_whatsapp_Failure ? `<div class="text-xs text-red-400 mt-1">${order.reason_for_whatsapp_Failure}</div>` : ''}
+                        </td>
+                        <td class="px-6 py-4 text-sm">
+                            ${statusContent}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                            <button class="view-order-btn text-primary-400 hover:text-primary-300" data-order-id="${order.easy_order_id}">
+                                <i class="fas fa-eye ml-1"></i> عرض
+                            </button>
+                        </td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+                
+                // Add event listeners to view buttons
+                document.querySelectorAll('.view-order-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const orderId = this.getAttribute('data-order-id');
+                        console.log(orderId)
+                        const order = orders.find(o => o.easy_order_id === orderId);
+                        
+                        
+                        if (order) {
+                            showOrderDetails(order);
+                        }
+                    });
+                });
+            }
+            
+            // Show order details in modal
+            function showOrderDetails(order) {
+                // Calculate total
+                let total = 0;
+                order.items.forEach(item => {
+                    total += item.price * item.quantity;
+                });
+                
+                // Format date
+                const orderDate = new Date(order.date * 1000);
+                const formattedDate = orderDate.toLocaleDateString('ar-EG', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                // Format status
+                let statusBadge = '';
+                switch (order.order_status) {
+                    case 'pending':
+                        statusBadge = '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">قيد الانتظار</span>';
+                        break;
+                    case 'processing':
+                        statusBadge = '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">قيد المعالجة</span>';
+                        break;
+                    case 'completed':
+                        statusBadge = '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">مكتمل</span>';
+                        break;
+                    case 'cancelled':
+                        statusBadge = '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">ملغي</span>';
+                        break;
+                    default:
+                        statusBadge = '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">غير معروف</span>';
+                }
+                
+                // Order success status
+                const orderSuccessBadge = order.Sucesss 
+                    ? '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">ناجح</span>'
+                    : '<span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">فاشل</span>';
+                
+                // Populate order details
+                orderDetails.innerHTML = `
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="text-lg font-semibold">معلومات الطلب</h4>
+                            <div class="flex space-x-2 space-x-reverse">
+                                ${statusBadge}
+                                ${orderSuccessBadge}
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-gray-400">رقم الطلب</p>
+                                <p class="font-medium">${order.easy_order_id}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400">تاريخ الطلب</p>
+                                <p class="font-medium">${formattedDate}</p>
+                            </div>
+                        </div>
+                        ${order.reasonForFailure ? `
+                        <div class="mt-2">
+                            <p class="text-gray-400">سبب الفشل</p>
+                            <p class="font-medium text-red-400">${order.reasonForFailure}</p>
+                        </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h4 class="text-lg font-semibold mb-2">معلومات العميل</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-gray-400">الاسم</p>
+                                <p class="font-medium">${order.customer_details.name}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400">رقم الهاتف</p>
+                                <p class="font-medium">${order.customer_details.phone}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400">العنوان</p>
+                                <p class="font-medium">${order.customer_details.address}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h4 class="text-lg font-semibold mb-4">المنتجات</h4>
+                        <div class="w-full">
+                            <table class="min-w-full divide-y divide-gray-600">
+                                <thead>
+                                    <tr>
+                                        <th class="px-4 py-2 text-right text-xs font-medium text-gray-400">المعرف</th>
+                                        <th class="px-4 py-2 text-right text-xs font-medium text-gray-400">اللون</th>
+                                        <th class="px-4 py-2 text-right text-xs font-medium text-gray-400">الكمية</th>
+                                        <th class="px-4 py-2 text-right text-xs font-medium text-gray-400">السعر</th>
+                                        <th class="px-4 py-2 text-right text-xs font-medium text-gray-400">العمولة</th>
+                                        <th class="px-4 py-2 text-right text-xs font-medium text-gray-400">الحالة</th>
+                                        <th class="px-4 py-2 text-right text-xs font-medium text-gray-400">الإجمالي</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-600">
+                                    ${order.items.map(item => `
+                                        <tr>
+                                            <td class="px-4 py-2 text-sm">${item.id}</td>
+                                            <td class="px-4 py-2 text-sm">${item.color_id}</td>
+                                            <td class="px-4 py-2 text-sm">${item.quantity}</td>
+                                            <td class="px-4 py-2 text-sm">${item.price} ج.م</td>
+                                            <td class="px-4 py-2 text-sm">${item.commission} ج.م</td>
+                                            <td class="px-4 py-2 text-sm">
+                                                ${item.Sucesss 
+                                                    ? '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">ناجح</span>' 
+                                                    : '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">فاشل</span>'}
+                                                ${item.reasonForFailure ? `<div class="text-xs text-red-400 mt-1">${item.reasonForFailure}</div>` : ''}
+                                            </td>
+                                            <td class="px-4 py-2 text-sm">${item.price * item.quantity} ج.م</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="6" class="px-4 py-2 text-left font-medium">الإجمالي</td>
+                                        <td class="px-4 py-2 font-bold">${total} ج.م</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    
+                `;
+                
+                // Show modal
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+            
+            // Load orders from JSON file
+            fetch('/api/orders')
+                .then(response => response.json())
+                .then(orders => {
+                    allOrders = orders;
+                    renderOrders(orders);
+                })
+                .catch(error => {
+                    console.error('Error loading orders:', error);
+                    
+                    // If fetch fails, use the provided sample order
+                    allOrders = [{
+                        "easy_order_id": "39d42b80-ce62-4245-8160-37ec6c1a87f8",
+                        "whatsapp_message_success": true,
+                        "reason_for_whatsapp_Failure": null,
+                        "Sucesss": false,
+                        "reasonForFailure": "لم يتم التعرف علي المدينة",
+                        "order_status": "pending",
+                        "date": 1743254791.917135,
+                        "customer_details": {
+                            "name": "تيست",
+                            "phone": "ه",
+                            "address": "سموحة",
+                            "state_value": 3,
+                            "city_value": 149
+                        },
+                        "items": [
+                            {
+                                "Sucesss": false,
+                                "reasonForFailure": null,
+                                "id": "saaa-cartier-kod61-IjNsZE",
+                                "color_id": "85-color-3",
+                                "quantity": 1,
+                                "price": 800,
+                                "commission": 100
+                            }
+                        ]
+                    }];
+                    renderOrders(allOrders);
+                });
+        });
+    </script>
+</body>
+</html>

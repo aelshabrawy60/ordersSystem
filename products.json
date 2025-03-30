@@ -1,0 +1,26 @@
+[
+    {
+        "fekra_id": "saaa-cartier-kod61-IjNsZE",
+        "easy_order_id": "cartier watch",
+        "colors": [
+            {
+                "fekra_id": "85-color-0",
+                "easy_order_id": "ابيض"
+            },
+            {
+                "fekra_id": "85-color-1",
+                "easy_order_id": "اسود"
+            },
+            {
+                "fekra_id": "85-color-2",
+                "easy_order_id": "ازرق"
+            },
+            {
+                "fekra_id": "85-color-3",
+                "easy_order_id": "اخضر"
+            }
+        ],
+        "price": 800,
+        "commission": 100
+    }
+]
