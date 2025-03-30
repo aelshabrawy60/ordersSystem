@@ -164,7 +164,7 @@ def webhook():
             isAllOrderSucces = False
             break
 
-        
+
     # send whatsapp message
 
     
@@ -340,7 +340,7 @@ def update_fekra_credentials():
 @app.route('/api/whatsapp-status', methods=['GET'])
 def whatsapp_status():
     try:
-        response = requests.get('http://13.60.228.182:3000/status', timeout=5)
+        response = requests.get('http://16.171.13.175:3000/status', timeout=5)
         return response.json(), response.status_code
     except Exception as e:
         return {"status": "error", "message": str(e)}, 500
