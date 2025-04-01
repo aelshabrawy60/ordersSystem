@@ -121,7 +121,7 @@ def webhook():
 
     error = None
 
-    if customer_information["payment_method"] is not "cod":
+    if customer_information["payment_method"] != "cod":
         order_details = {
             "id": id,
             "customer_details": customer_information,
