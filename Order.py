@@ -9,7 +9,10 @@ class Order:
         with open('governments.json', 'r', encoding='utf-8') as file:
             data = json.load(file)
 
-        self.government = next((item for item in data if item.get("name") == self.easyOrder.get("government")), None)
+        self.government = next(
+            (item for item in data if item.get("name", "").strip() == self.easyOrder.get("government", "").strip()), 
+            None
+        )
 
         self.city_code = None
 
