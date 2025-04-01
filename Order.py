@@ -62,7 +62,12 @@ class Order:
 
             if not len(product.get("colors")) == 0:
                 easy_order_color = item.get("variant").get("variation_props")[0].get("variation_prop")
-                color = next((color for color in product.get("colors") if color.get("easy_order_id") == easy_order_color), None)
+                color = next(
+                    (color for color in product.get("colors", []) 
+                    if str(color.get("easy_order_id", "")).strip() == str(easy_order_color).strip()), 
+                    None
+                )
+
 
                 if not color:
                     order_items.append(
