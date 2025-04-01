@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orders Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Noto+Sans+Arabic:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -110,7 +111,6 @@
                                 <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">رقم الطلب</th>
                                 <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">اسم العميل</th>
                                 <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">رقم الهاتف</th>
-                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">العنوان</th>
                                 <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">المنتجات</th>
                                 <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">حالة الواتساب</th>
                                 <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">حالة الطلب</th>
@@ -258,7 +258,6 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${order.easy_order_id.substring(0, 8)}...</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${order.customer_details.name}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${order.customer_details.phone}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${order.customer_details.address}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${totalItems}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                             ${order.whatsapp_message_success 

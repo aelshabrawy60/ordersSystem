@@ -121,6 +121,33 @@ def webhook():
 
     error = None
 
+    if customer_information["payment_method"] is not "cod":
+        order_details = {
+            "id": id,
+            "customer_details": customer_information,
+            "items": order_items,
+            "whatsapp_message_success": False,
+            "reason_for_whatsapp_Failure": error,
+            "Sucesss": False,
+            "reasonForFailure": "دفع مقدم",
+        }
+        order.save_order(order=order_details)
+        return {"status": "success"}, 200
+    
+    if customer_information["state_value"] is None:
+
+        order_details = {
+            "id": id,
+            "customer_details": customer_information,
+            "items": order_items,
+            "whatsapp_message_success": False,
+            "reason_for_whatsapp_Failure": error,
+            "Sucesss": False,
+            "reasonForFailure": "لم يتم التعرف علي المحافظة",
+        }
+        order.save_order(order=order_details)
+        return {"status": "success"}, 200
+    
     if customer_information["city_value"] is None:
 
         order_details = {

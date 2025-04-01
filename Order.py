@@ -27,6 +27,7 @@ class Order:
             "city_value": self.city_code if self.city_code else None,
             "note": hasNote,
             "total_cost": self.easyOrder.get("total_cost"),
+            "payment_method": self.easyOrder.get("payment_method"),
         }
         pass
 

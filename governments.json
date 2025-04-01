@@ -254,7 +254,7 @@
         {"name": "Nbrouh", "value": "239"}
       ]
     },
-    { "name": "الشرقية", "value": 7 , "cities": [
+    { "name": "الشرقية  ", "value": 7 , "cities": [
         {"name": "Abou Hammad", "value": "240"},
         {"name": "Abu Kabir", "value": "241"},
         {"name": "Awlad Saqr", "value": "242"},
@@ -302,7 +302,7 @@
         {"name": "Meet El-Ezz", "value": "278"}
       ]
     },
-    { "name": "كفر الشيخ", "value": 10 , "cities": [
+    { "name": "كفر الشيخ  ", "value": 10 , "cities": [
         {"name": "El Brles", "value": "279"},
         {"name": "El Hamol", "value": "280"},
         {"name": "El Rayad", "value": "281"},
@@ -441,7 +441,7 @@
         {"name": "Amer Village", "value": "407"}
       ]
     },
-    { "name": "الإسماعيلية", "value": 14 , "cities": [
+    { "name": "الإسماعيلية  ", "value": 14 , "cities": [
         {"name": "Fayd", "value": "408"},
         {"name": "Ismailia City", "value": "409"},
         {"name": "Kantara East", "value": "410"},
@@ -701,7 +701,7 @@
         {"name": "Hay Gharb", "value": "652"}
       ]
     },
-    { "name": "سوهاج", "value": 19 , "cities": [
+    { "name": "سوهاج  ", "value": 19 , "cities": [
         {"name": "Tama", "value": "653"},
         {"name": "Tahta", "value": "654"},
         {"name": "Juhayna", "value": "655"},

@@ -1,0 +1,6 @@
+requests
+langchain_google_genai
+langchain
+BeautifulSoup
+selenium
+pillow
