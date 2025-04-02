@@ -16,7 +16,7 @@ class Fekra:
     def __init__(self, email, password, use_saved_cookies=True):
          # Configure Chrome options for headless mode
         chrome_options = Options()
-        #chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--headless')
         chrome_options.add_argument('--disable-gpu')
         chrome_options.add_argument('--window-size=1920,1080')
         chrome_options.add_argument('--no-sandbox')
