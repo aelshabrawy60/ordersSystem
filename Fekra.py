@@ -16,7 +16,7 @@ class Fekra:
     def __init__(self, email, password, use_saved_cookies=True):
          # Configure Chrome options for headless mode
         chrome_options = Options()
-        chrome_options.add_argument('--headless')
+        #chrome_options.add_argument('--headless')
         chrome_options.add_argument('--disable-gpu')
         chrome_options.add_argument('--window-size=1920,1080')
         chrome_options.add_argument('--no-sandbox')
@@ -106,7 +106,7 @@ class Fekra:
             if address:
                 address_field = self.driver.find_element(By.ID, "receiver_address")
                 address_field.clear()
-                address_field.send_keys(address)
+                address_field.send_keys("".join(address.splitlines()))
 
             
             # Select state if provided

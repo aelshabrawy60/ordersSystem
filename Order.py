@@ -2,6 +2,10 @@ from City import City
 import json
 from datetime import datetime
 import requests
+import math
+
+def ceil_to_highest_5(number: int) -> int:
+    return math.ceil(number / 5) * 5
 
 class Order:
     def __init__(self, easyOrder, generative_api_key):
@@ -29,7 +33,7 @@ class Order:
             "state_value": self.government["value"] if self.government else None,
             "city_value": self.city_code if self.city_code else None,
             "note": hasNote,
-            "total_cost": self.easyOrder.get("total_cost"),
+            "total_cost": ceil_to_highest_5(self.easyOrder.get("total_cost")),
             "payment_method": self.easyOrder.get("payment_method"),
         }
         pass
