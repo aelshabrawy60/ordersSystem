@@ -223,6 +223,7 @@ def map_fekra_status_to_easy_status(fekra_status):
     # This is a placeholder mapping - adjust based on actual Fekra statuses
     status_map = {
         "معلقة": "pending",
+        "مؤكدة": "confirmed",
         "قيد الانتظار": "pending_payment",
         "شحنات مؤكدة": "paid",
         "تحت التحضير": "processing",

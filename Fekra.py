@@ -279,7 +279,10 @@ class Fekra:
         order_price = (total_cost - shipping_cost) / orders_count
 
         for order in orders:
-            order["price"] = order_price  # Assuming each order is a dictionary
+            if order["quantity"] == 0:
+                order["price"] = order_price
+                continue
+            order["price"] = order_price / order["quantity"] # Assuming each order is a dictionary
         
         return orders
 
