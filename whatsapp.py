@@ -8,7 +8,7 @@ import textwrap
 
 
 # API base URL - change to your server address
-API_URL = "http://16.171.13.175:3000"
+API_URL = "http://13.60.170.59:3000"
 
 def check_status():
     """Check the status of the WhatsApp client"""
