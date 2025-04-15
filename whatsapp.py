@@ -12,7 +12,7 @@ API_URL = "http://16.171.13.175:3000"
 
 def check_status():
     """Check the status of the WhatsApp client"""
-    response = requests.get(f"{API_URL}/status")
+    response = requests.get(f"{API_URL}/api/session/admin/status")
     return response.json()
 
 def display_qr_code(qr_data_url):
@@ -29,15 +29,15 @@ def display_qr_code(qr_data_url):
 def send_whatsapp_message(phone_number, message_text):
     """Send a WhatsApp message"""
     payload = {
-        "number": phone_number,  
+        "to": phone_number,  
         "message": message_text
     }
     
-    response = requests.post(f"{API_URL}/send-message", json=payload)
+    response = requests.post(f"{API_URL}/api/session/admin/sendText", json=payload)
     return response.json()
 
 def send_whatsapp(customer_information, order_details, products):
-    phone_number = "+2" + customer_information["phone"]
+    phone_number = "2" + customer_information["phone"]
     # First check the status
     status = check_status()
     

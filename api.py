@@ -367,7 +367,7 @@ def update_fekra_credentials():
 @app.route('/api/whatsapp-status', methods=['GET'])
 def whatsapp_status():
     try:
-        response = requests.get('http://16.171.13.175:3000/status', timeout=100)
+        response = requests.get('http://16.171.13.175:3000/api/session/admin/status', timeout=100)
         return response.json(), response.status_code
     except Exception as e:
         return {"status": "error", "message": str(e)}, 500

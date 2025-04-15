@@ -202,15 +202,15 @@
                 
                 const data = await response.json();
                 
-                if (data.status === 'ready') {
+                if (data.connected == true) {
                     statusIndicator.className = 'w-3 h-3 rounded-full mr-2 bg-green-500';
                     statusText.textContent = 'Active';
                     qrCodeContainer.classList.add('hidden');
-                } else if (data.status === 'need_auth') {
+                } else if (data.status === false) {
                     statusIndicator.className = 'w-3 h-3 rounded-full mr-2 bg-red-500';
                     statusText.textContent = 'Not Active - Authentication Required';
                     qrCodeContainer.classList.remove('hidden');
-                    qrCodeImage.src = data.qrCode;
+                    qrCodeImage.src = "/";
                 } else if (data.status === 'initializing') {
                     statusIndicator.className = 'w-3 h-3 rounded-full mr-2 bg-yellow-500';
                     statusText.textContent = 'Initializing...';
