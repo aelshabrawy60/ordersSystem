@@ -8,8 +8,6 @@ from selenium import webdriver
 from datetime import datetime, timedelta
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 import time
-import json
-import concurrent.futures
 
 
 class Fekra:

@@ -3,7 +3,6 @@ from Order import Order
 from Fekra import Fekra
 from whatsapp import send_whatsapp
 import json
-import base64
 
 
 
