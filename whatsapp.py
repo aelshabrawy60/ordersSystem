@@ -12,7 +12,7 @@ API_URL = "http://45.61.129.15:3000"
 
 def check_status():
     """Check the status of the WhatsApp client"""
-    response = requests.get(f"{API_URL}/api/session/admin2/status")
+    response = requests.get(f"{API_URL}/status")
     return response.json()
 
 def display_qr_code(qr_data_url):
@@ -29,11 +29,11 @@ def display_qr_code(qr_data_url):
 def send_whatsapp_message(phone_number, message_text):
     """Send a WhatsApp message"""
     payload = {
-        "to": phone_number,  
+        "number": phone_number,  
         "message": message_text
     }
     
-    response = requests.post(f"{API_URL}/api/session/admin2/sendText", json=payload)
+    response = requests.post(f"{API_URL}/send-message", json=payload)
     return response.json()
 
 def send_whatsapp(customer_information, order_details, products):
@@ -59,7 +59,7 @@ def send_whatsapp(customer_information, order_details, products):
         return False, result.get('message'), None
 
 if __name__ == "__main__":
-    send_whatsapp(phone_number="01019689098", message="ازيك")
+    send_whatsapp_message(phone_number="+201147009632", message_text=".")
 
 
 def create_order_message(name, order_items, products, total_price):
