@@ -111,14 +111,15 @@ def create_order_message(name, order_items, products, total_price):
     for item in order_items_copy:
         # Don't show quantity when it's 0
         if item['quantity'] <= 1:
-            message += f"\u200F• {item['id']} \u200F(اللون: {item['color_id']})\n"
+            message += f"\u200F• {item['id']} \u200Fاللون::: {item['color_id']}\n"
         else:
-            message += f"\u200F• {item['id']} \u200F(اللون: {item['color_id']}، الكمية: {item['quantity']})\n"
+            message += f"\u200F• {item['id']} \u200Fاللون::: {item['color_id']}، الكمية: {item['quantity']}\n"
 
     message += f"\u200F الاجمالي {total_price}\n"
     message += textwrap.dedent("""
-        ، وسيتم التواصل معك هاتفيا او عبر الواتس للتأكيد من قبل فريق العمل.
-        (🛑ملحوظة الرقم الي هيتصل بحضرتك ده للتأكيد الطلب فقط مره واحدة فقط التواصل بيكون علي ارقمنا الوحيدة المذكورة علي الموقع علي الواتس فقط)
+        طلب حضرتك هيوصل في خلال يومين الي تلاتة ان شاء الله المندوب هيكلمك  لاستلام طلبك
+        ، وسيتم التواصل معك هاتفيا او عبر الواتس للتأكيد من قبل فريق العمل
+        
         شكرا لختيارك Pretful😍
         نتمني لك يوم سعيد
         مع اطيب التحيات،

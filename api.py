@@ -6,6 +6,68 @@ from Order import Order
 from Fekra import Fekra
 from whatsapp import send_whatsapp
 from check_status import update_orders_status
+import threading
+from concurrent.futures import ThreadPoolExecutor
+import time
+
+# Add this at the top of your api.py file
+executor = ThreadPoolExecutor(max_workers=3)
+
+def process_order_async(customer_information, order_items, products, email, password, order):
+    """Process the order in background"""
+    try:
+        print(f"Starting background order processing for {customer_information.get('name', 'Unknown')}")
+        
+        # Your existing order processing logic
+        fekra = Fekra(
+            email=email,
+            password=password,
+            use_saved_cookies=False
+        )
+
+        orders = fekra.make_order(customer_details=customer_information, orders=order_items)
+
+        isAllOrderSucces = True
+        for order_ in orders:
+            if order_.get("Sucesss") == False:
+                isAllOrderSucces = False
+                break
+
+        # Send whatsapp message
+        try:
+            status, error, qrCode = send_whatsapp(
+                customer_information=customer_information,
+                order_details=order_items,
+                products=products,
+            )
+        except Exception as e:
+            status = False
+            error = str(e)
+
+        if not status and not error:
+            error = "يتطلب تسجيل الدخول"
+        
+        # Save the final order result
+        order_details = {
+            "id": customer_information.get("id", "unknown"),
+            "customer_details": customer_information,
+            "items": order_items,
+            "whatsapp_message_success": True if status else False,
+            "reason_for_whatsapp_Failure": error,
+            "Sucesss": isAllOrderSucces,
+            "reasonForFailure": None,
+        }
+
+        order.save_order(order=order_details)
+        
+        # Assuming you have an Order class instance to save
+        # You might need to adjust this part based on your Order class implementation
+        print("Order processing completed successfully")
+        print("Order details:", order_details)
+        
+    except Exception as e:
+        print(f"Error in background order processing: {e}")
+
 
 app = Flask(__name__)
 
@@ -93,7 +155,6 @@ def write_products(products):
         print(f"Error writing to JSON file: {e}")
         return False
 
-# Routes
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
@@ -103,15 +164,14 @@ def webhook():
     with open('products.json', 'r', encoding='utf-8') as file:
         products = json.load(file)
 
-
     with open('settings.json', 'r') as f:
         settings = json.load(f)
         generative_api_key = settings.get("gemini_api_key")
         email = settings.get("fekra").get("email")
         password = settings.get("fekra").get("password")
 
-
     update_orders_status(email=email, password=password, api_key="66655b9c-e26a-4ad0-9d1c-b813a2d0e8b2", use_saved_cookies=True)
+    
     # extract order details for fekra
     order = Order(easyOrder=data, generative_api_key=generative_api_key)
     customer_information, order_items, id = order.getFekraOrderDetails(products=products)
@@ -119,48 +179,45 @@ def webhook():
     print("customer_information", customer_information)
     print("order_items", order_items)
 
-    error = None
-
+    # Quick validation checks that can fail fast
     if customer_information["payment_method"] != "cod":
         order_details = {
             "id": id,
             "customer_details": customer_information,
             "items": order_items,
             "whatsapp_message_success": False,
-            "reason_for_whatsapp_Failure": error,
+            "reason_for_whatsapp_Failure": None,
             "Sucesss": False,
             "reasonForFailure": "دفع مقدم",
         }
         order.save_order(order=order_details)
-        return {"status": "success"}, 200
+        return {"status": "success", "message": "Payment method not COD"}, 200
     
     if customer_information["state_value"] is None:
-
         order_details = {
             "id": id,
             "customer_details": customer_information,
             "items": order_items,
             "whatsapp_message_success": False,
-            "reason_for_whatsapp_Failure": error,
+            "reason_for_whatsapp_Failure": None,
             "Sucesss": False,
             "reasonForFailure": "لم يتم التعرف علي المحافظة",
         }
         order.save_order(order=order_details)
-        return {"status": "success"}, 200
+        return {"status": "success", "message": "State not recognized"}, 200
     
     if customer_information["city_value"] is None:
-
         order_details = {
             "id": id,
             "customer_details": customer_information,
             "items": order_items,
             "whatsapp_message_success": False,
-            "reason_for_whatsapp_Failure": error,
+            "reason_for_whatsapp_Failure": None,
             "Sucesss": False,
             "reasonForFailure": "لم يتم التعرف علي المدينة",
         }
         order.save_order(order=order_details)
-        return {"status": "success"}, 200
+        return {"status": "success", "message": "City not recognized"}, 200
     
     if customer_information["note"] == True:
         order_details = {
@@ -168,59 +225,30 @@ def webhook():
             "customer_details": customer_information,
             "items": order_items,
             "whatsapp_message_success": False,
-            "reason_for_whatsapp_Failure": error,
+            "reason_for_whatsapp_Failure": None,
             "Sucesss": False,
             "reasonForFailure": "يحتوي علي ملاحظة",
         }
         order.save_order(order=order_details)
-        return {"status": "success"}, 200
+        return {"status": "success", "message": "Contains note"}, 200
 
+    # Submit the heavy work to background processing
+    customer_information["id"] = id  # Add ID for background processing
     
-    fekra = Fekra(
-        email=email,
-        password=password,
-        use_saved_cookies=False
+    executor.submit(
+        process_order_async,
+        customer_information,
+        order_items,
+        products,
+        email,
+        password,
+        order
     )
-
-    orders = fekra.make_order(customer_details=customer_information, orders=order_items)
-
-    isAllOrderSucces = True
-
-    for order_ in orders:
-        if order_.get("Sucesss") == False:
-            isAllOrderSucces = False
-            break
-
-
-    # send whatsapp message
-
     
-    try:
-        status, error, qrCode = send_whatsapp(
-            customer_information=customer_information,
-            order_details=order_items,
-            products=products,
-        )
-    except Exception as e:
-        status = False
-        error = str(e)
-
-    if not status and not error:
-        error = "يتطلب تسجيل الدخول"
+    print(f"Order submitted for background processing: {id}")
     
-    order_details = {
-        "id": id,
-        "customer_details": customer_information,
-        "items": order_items,
-        "whatsapp_message_success": True if status else False,
-        "reason_for_whatsapp_Failure": error,
-        "Sucesss": isAllOrderSucces,
-        "reasonForFailure": None,
-    }
-    order.save_order(order=order_details)
-    
-
-    return {"status": "success"}, 200
+    # Return immediately to avoid timeout
+    return {"status": "accepted", "message": "Order submitted for processing", "id": id}, 202
 
 @app.route('/')
 def home():
