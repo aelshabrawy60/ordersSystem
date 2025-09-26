@@ -50,6 +50,8 @@ def cityExtractor(cities, city, address):
             you helping the custommer support to detrmined the city code user mean
             cities {cities}
 
+            the cities may be in english and address in arabic or vice versa it does not matter try to figure it
+
             if you can not detrmined the city ot it unclear or not in the citys list you should return isDetrmined false and cityCode None
             use the city first if it does not provide the solution use the address
         
@@ -60,7 +62,7 @@ def cityExtractor(cities, city, address):
     HumanMessage(f"city : {city} \n address: {address}")
     ]
 
-    llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash").with_structured_output(Extraction)
+    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash").with_structured_output(Extraction)
 
     result = llm.invoke(messages).model_dump()
 
