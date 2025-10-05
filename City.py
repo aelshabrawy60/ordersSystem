@@ -23,6 +23,16 @@ class City:
         if city_code:
             return city_code
         return False
+    
+    def extract_government_code(self):
+        with open("governments.json", "r", encoding="utf-8") as file:
+            data = json.load(file)
+            governmentCode = GovernmentExtractor(city=self.city, address=self.address, governments=data)
+            
+            if governmentCode:
+                return governmentCode
+            return False
+        
 
 
 
@@ -69,3 +79,42 @@ def cityExtractor(cities, city, address):
     if result["isDetrmined"] == False:
         return False
     return result["cityCode"]
+
+
+
+class GovernmentExtraction(BaseModel):
+    isDetrmined: bool
+    governmentCode: int
+
+
+def GovernmentExtractor(city, address, governments):
+
+    messages = [
+    SystemMessage(
+        f"""
+            OBJECTIVE
+
+            your job is to recive city and address user has entered and extract the government code
+
+            CONTEXT
+
+            you helping the custommer support to detrmined the egyption government code that contains the city or the adress the user enters
+            your data {governments}
+
+            the governments and the cities may be in english and address in arabic or vice versa it does not matter try to figure it
+
+            if you can not detrmined the governments or it unclear or not in the governments list you should return isDetrmined false and governmentCode None
+            use the city first if it does not provide the solution use the address
+        """
+    ),
+
+    HumanMessage(f"city : {city} \n address: {address}")
+    ]
+
+    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash").with_structured_output(GovernmentExtraction)
+
+    result = llm.invoke(messages).model_dump()
+
+    if result["isDetrmined"] == False:
+        return False
+    return result["governmentCode"]

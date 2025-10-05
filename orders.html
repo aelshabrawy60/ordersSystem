@@ -260,10 +260,16 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${order.customer_details.phone}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${totalItems}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            ${order.whatsapp_message_success 
-                                ? '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">تم الإرسال</span>' 
-                                : '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">فشل</span>'}
-                            ${order.reason_for_whatsapp_Failure ? `<div class="text-xs text-red-400 mt-1">${order.reason_for_whatsapp_Failure}</div>` : ''}
+                        ${order.whatsapp_message_success 
+                            ? '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">تم الإرسال</span>' 
+                            : '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">فشل</span>'}
+                        ${
+                            order.reason_for_whatsapp_Failure 
+                            ? `<div class="text-xs text-red-400 mt-1">${
+                                order.reason_for_whatsapp_Failure.split(' ').slice(0, 6).join(' ')
+                                }${order.reason_for_whatsapp_Failure.split(' ').length > 6 ? '...' : ''}</div>` 
+                            : ''
+                        }
                         </td>
                         <td class="px-6 py-4 text-sm">
                             ${statusContent}

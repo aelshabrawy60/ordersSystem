@@ -24,6 +24,33 @@ class Order:
             self.City = City(cities=self.government["cities"], city=self.easyOrder.get("country"), address=self.easyOrder.get("address"), generative_api_key=generative_api_key)
             self.city_code = self.City.get_city_code()
 
+            if self.city_code == False:
+                # try to extract the government code in case user has enterd wrong government
+                self.extracted_government_code = self.City.extract_government_code()
+
+                if self.extracted_government_code != False:
+
+                    user_enterd_government_code = self.government["value"] if self.government else None
+                    if user_enterd_government_code != self.extracted_government_code :
+                        # try to extract city again with the new extracted government code
+                        print("correcting government needed")
+                        self.government = next(
+                            (item for item in data if item.get("value") == self.extracted_government_code), 
+                            None
+                        )
+                        self.newCity = City(cities=self.government["cities"], city=self.easyOrder.get("country"), address=self.easyOrder.get("address"), generative_api_key=generative_api_key)
+                        self.city_code = self.newCity.get_city_code()
+
+                        if self.city_code == False:
+                            # complex solution
+                            print("complex solution needed")
+                            pass
+                    else :
+                        # complex solution
+                        print("complex solution needed")
+                        pass
+
+
 
         hasNote = self.easyOrder.get("note") is not None and len(self.easyOrder.get("note")) > 0
         self.customer_information = {
@@ -154,3 +181,18 @@ class Order:
         response.raise_for_status()  # Raise exception for HTTP errors
         
         return response.json()
+
+
+if __name__ == "__main__":
+
+    with open('settings.json', 'r') as f:
+        settings = json.load(f)
+        generative_api_key = settings.get("gemini_api_key")
+        email = settings.get("fekra").get("email")
+        password = settings.get("fekra").get("password")
+
+    with open("testOrder.json", "r", encoding="utf-8") as file:
+            data = json.load(file)
+
+    order = Order(easyOrder=data, generative_api_key=generative_api_key)
+    print(order.customer_information)
